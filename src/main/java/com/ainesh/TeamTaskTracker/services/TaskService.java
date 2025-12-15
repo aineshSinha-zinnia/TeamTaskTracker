@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import com.ainesh.TeamTaskTracker.dao.TaskDao;
 import com.ainesh.TeamTaskTracker.models.Task;
@@ -47,9 +46,24 @@ public class TaskService {
         .map(
           updatedTask -> {
             updatedTask.setUpdatedAt(LocalDateTime.now());
+            updatedTask.setTitle(task.getTitle());
+            updatedTask.setDescription(task.getDescription());
+            updatedTask.setStatus(task.getStatus());
             return taskDao.save(updatedTask);
           }
         );
+  }
+
+  public boolean deleteTask(Long id){
+    Optional<Task> taskToBeUpdated = getTaskById(id);
+
+    return taskToBeUpdated
+              .map(
+                (task) -> {
+                  taskDao.deleteById(id);
+                  return true;
+                }
+              ).orElseGet(() -> false);
   }
 
 }
