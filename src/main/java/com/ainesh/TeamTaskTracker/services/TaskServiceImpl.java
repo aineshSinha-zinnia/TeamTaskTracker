@@ -33,16 +33,12 @@ public class TaskServiceImpl implements TaskService {
     this.taskUpdationMapper = taskUpdationMapper;
   }
 
-  public Optional<List<TaskResponseDTO>> getAllTasks(){
-    List<Task> tasks = taskDao.findAll();
-    if(tasks.size()==0)
-      return Optional.empty();
-    return Optional.of(
-      tasks
-        .stream()
-        .map(taskResponseMapper::apply)
-        .collect(Collectors.toList())
-    );
+  public List<TaskResponseDTO> getAllTasks(){
+    return taskDao
+                .findAll()
+                .stream()
+                .map(taskResponseMapper::apply)
+                .collect(Collectors.toList());
   }
 
   public TaskResponseDTO addTask(TaskCreationRequestDTO taskCreationRequestDTO){
@@ -78,16 +74,8 @@ public class TaskServiceImpl implements TaskService {
         );
   }
 
-  public boolean deleteTask(Long id){
-    Optional<Task> taskToBeUpdated = taskDao.findById(id);
-
-    return taskToBeUpdated
-              .map(
-                (task) -> {
-                  taskDao.deleteById(id);
-                  return true;
-                }
-              ).orElseGet(() -> false);
+  public void deleteTask(Long id){
+    taskDao.deleteById(id);
   }
 
 }

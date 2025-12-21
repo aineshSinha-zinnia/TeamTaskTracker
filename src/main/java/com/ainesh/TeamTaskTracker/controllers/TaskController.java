@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,12 +26,10 @@ public class TaskController {
   private TaskService taskService;
   
   @GetMapping("/tasks")
-  public ResponseEntity<?> getAllTasks(){
-    Optional<List<TaskResponseDTO>> tasks = taskService.getAllTasks();
+  public ResponseEntity<List<TaskResponseDTO>> getAllTasks(){
+    List<TaskResponseDTO> tasks = taskService.getAllTasks();
     
-    return tasks
-              .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-              .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    return new ResponseEntity<>(tasks, HttpStatus.OK);
   }
 
   @PostMapping("/task")
@@ -64,7 +61,7 @@ public class TaskController {
 
   @DeleteMapping("/task/{id}")
   public ResponseEntity<?> deleteTask(@PathVariable Long id){
-    return taskService.deleteTask(id) ? new ResponseEntity<>(HttpStatusCode.valueOf(204)) : ResponseEntity.notFound().build();
+    return ResponseEntity.noContent().build();
   }
 
 }
