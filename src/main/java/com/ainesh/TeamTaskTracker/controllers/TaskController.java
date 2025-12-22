@@ -1,7 +1,6 @@
 package com.ainesh.TeamTaskTracker.controllers;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +16,7 @@ import com.ainesh.TeamTaskTracker.dto.TaskCreationRequestDTO;
 import com.ainesh.TeamTaskTracker.dto.TaskResponseDTO;
 import com.ainesh.TeamTaskTracker.dto.TaskUpdationRequestDTO;
 import com.ainesh.TeamTaskTracker.interfaces.TaskService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/work")
@@ -33,7 +33,8 @@ public class TaskController {
   }
 
   @PostMapping("/task")
-  public ResponseEntity<?> addTask(@RequestBody TaskCreationRequestDTO taskCreationRequestDTO){
+  public ResponseEntity<?> addTask(@Valid @RequestBody TaskCreationRequestDTO taskCreationRequestDTO){
+    // method argument invalid possible - bad request 400 as well as 500
     TaskResponseDTO savedTaskDTO = taskService.addTask(taskCreationRequestDTO);
 
     return new ResponseEntity<>(savedTaskDTO, HttpStatus.OK);
@@ -41,26 +42,21 @@ public class TaskController {
 
   @GetMapping("/task/{id}")
   public ResponseEntity<?> getTaskById(@PathVariable Long id){
-    return taskService.getTaskById(id)
-              .map(value -> ResponseEntity.ok(value))
-              .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    // should give an error, 404 maybe
+    return ResponseEntity.ok(taskService.getTaskById(id));
   }
 
   @PutMapping("/task/{id}")
-  public ResponseEntity<?> updateTask(@PathVariable Long id, @RequestBody TaskUpdationRequestDTO taskUpdationRequestDTO){
-    Optional<TaskResponseDTO> updatedTask = taskService.updateTask(id, taskUpdationRequestDTO);
+  public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long id, @Valid @RequestBody TaskUpdationRequestDTO taskUpdationRequestDTO){
+    // either 404 as well as 500 or even method invalid - 400/404/500
+    TaskResponseDTO updatedTask = taskService.updateTask(id, taskUpdationRequestDTO);
 
-    return updatedTask
-              .map(
-                (returnedTask) -> new ResponseEntity<>(returnedTask, HttpStatus.OK)
-              )
-              .orElseGet(
-                () -> new ResponseEntity<>(HttpStatus.NOT_FOUND)
-              );
+    return new ResponseEntity<>(updatedTask, HttpStatus.OK);
   }
 
   @DeleteMapping("/task/{id}")
   public ResponseEntity<?> deleteTask(@PathVariable Long id){
+    // on error, 500 code
     return ResponseEntity.noContent().build();
   }
 
