@@ -1,7 +1,7 @@
 package com.ainesh.TeamTaskTracker.controllers;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.ainesh.TeamTaskTracker.dto.TaskCreationRequestDTO;
 import com.ainesh.TeamTaskTracker.dto.TaskResponseDTO;
 import com.ainesh.TeamTaskTracker.dto.TaskUpdationRequestDTO;
+import com.ainesh.TeamTaskTracker.enums.TaskStatusEnum;
 import com.ainesh.TeamTaskTracker.interfaces.TaskService;
 import jakarta.validation.Valid;
 
@@ -26,8 +28,11 @@ public class TaskController {
   private TaskService taskService;
   
   @GetMapping("/tasks")
-  public ResponseEntity<List<TaskResponseDTO>> getAllTasks(){
-    List<TaskResponseDTO> tasks = taskService.getAllTasks();
+  public ResponseEntity<?> getAllTasks(
+    @RequestParam(required = false) TaskStatusEnum status,
+    Pageable pageable
+  ){
+    var tasks = taskService.getAllTasks(status, pageable);
     
     return new ResponseEntity<>(tasks, HttpStatus.OK);
   }

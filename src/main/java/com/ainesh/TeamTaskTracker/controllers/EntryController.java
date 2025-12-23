@@ -13,4 +13,9 @@ public class EntryController {
     return "Hello there";
   }
 
+  @GetMapping("/boom")
+  public void boom() throws Exception{
+    throw new Exception("Timepass");
+  }
+
 }

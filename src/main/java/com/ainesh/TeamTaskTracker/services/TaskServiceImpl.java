@@ -1,8 +1,9 @@
 package com.ainesh.TeamTaskTracker.services;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ainesh.TeamTaskTracker.dao.TaskDao;
@@ -16,6 +17,7 @@ import com.ainesh.TeamTaskTracker.enums.TaskStatusEnum;
 import com.ainesh.TeamTaskTracker.exceptions.ResourceNotFoundException;
 import com.ainesh.TeamTaskTracker.interfaces.TaskService;
 import com.ainesh.TeamTaskTracker.models.Task;
+import com.ainesh.TeamTaskTracker.utils.PageableUtil;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -33,12 +35,20 @@ public class TaskServiceImpl implements TaskService {
     this.taskUpdationMapper = taskUpdationMapper;
   }
 
-  public List<TaskResponseDTO> getAllTasks(){
+  public Page<TaskResponseDTO> getAllTasks(TaskStatusEnum status, Pageable pageable){
+
+    Pageable allowedPageable = PageableUtil.enforceSortWhiteList(
+      pageable, 
+      Set.of("id", "title", "description", "createdAt", "updatedAt")
+    );
+
+    if(status != null){
+      return taskDao.findByStatus(status, allowedPageable).map(taskResponseMapper::apply);
+    }
+
     return taskDao
-                .findAll()
-                .stream()
-                .map(taskResponseMapper::apply)
-                .collect(Collectors.toList());
+                .findAll(allowedPageable)
+                .map(taskResponseMapper::apply);
   }
 
   public TaskResponseDTO addTask(TaskCreationRequestDTO taskCreationRequestDTO){
