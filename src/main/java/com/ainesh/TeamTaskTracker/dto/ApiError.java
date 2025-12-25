@@ -10,5 +10,4 @@ public record ApiError(
   ApiErrorCodesEnum errorCode,
   LocalDateTime timeOfError
 ) {
-  
 }

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.ainesh.TeamTaskTracker.dto.TaskCreationRequestDTO;
@@ -21,7 +20,6 @@ import com.ainesh.TeamTaskTracker.interfaces.TaskService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/work")
 public class TaskController {
 
   @Autowired
@@ -62,6 +60,13 @@ public class TaskController {
   @DeleteMapping("/task/{id}")
   public ResponseEntity<?> deleteTask(@PathVariable Long id){
     // on error, 500 code
+    taskService.deleteTask(id);
+    return ResponseEntity.noContent().build();
+  }
+
+  @DeleteMapping("/tasks")
+  public ResponseEntity<?> deleteAll(){
+    taskService.deleteAll();
     return ResponseEntity.noContent().build();
   }
 

@@ -9,6 +9,6 @@ import com.ainesh.TeamTaskTracker.models.Task;
 public class TaskUpdationMapper implements Function<TaskUpdationRequestDTO, Task> {
   @Override
   public Task apply(TaskUpdationRequestDTO taskUpdationRequestDTO){
-    return new Task(null, taskUpdationRequestDTO.title(), taskUpdationRequestDTO.description(), taskUpdationRequestDTO.status(), null, null);
+    return new Task(null, taskUpdationRequestDTO.title(), taskUpdationRequestDTO.description(), taskUpdationRequestDTO.status(), null);
   }
 }

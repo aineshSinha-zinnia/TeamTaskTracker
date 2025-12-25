@@ -9,6 +9,6 @@ import com.ainesh.TeamTaskTracker.models.Task;
 public class TaskCreationMapper implements Function<TaskCreationRequestDTO, Task> {
   @Override
   public Task apply(TaskCreationRequestDTO taskCreationRequestDTO) {
-    return new Task(null, taskCreationRequestDTO.title(), taskCreationRequestDTO.description(), null, null, null);
+    return new Task(null, taskCreationRequestDTO.title(), taskCreationRequestDTO.description(), null, null);
   }
 }

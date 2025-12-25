@@ -10,8 +10,10 @@ import com.ainesh.TeamTaskTracker.models.Task;
 
 @Repository
 public interface TaskDao extends JpaRepository<Task, Long> {
+
   @Query("SELECT t FROM Task t WHERE " + "LOWER(t.title) LIKE(CONCAT('%', :title, '%'))")
   public Task searchTaskByTitle(String title);
 
   public Page<Task> findByStatus(TaskStatusEnum status, Pageable pageable);
+  
 }

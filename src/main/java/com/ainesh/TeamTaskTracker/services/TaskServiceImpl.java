@@ -1,6 +1,5 @@
 package com.ainesh.TeamTaskTracker.services;
 
-import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.Set;
@@ -55,8 +54,6 @@ public class TaskServiceImpl implements TaskService {
 
     Task task = taskCreationMapper.apply(taskCreationRequestDTO);
 
-    task.setCreatedAt(LocalDateTime.now());
-    task.setUpdatedAt(LocalDateTime.now());
     task.setStatus(TaskStatusEnum.OPEN);
 
     return taskResponseMapper.apply(taskDao.save(task));
@@ -86,6 +83,10 @@ public class TaskServiceImpl implements TaskService {
 
   public void deleteTask(Long id){
     taskDao.deleteById(id);
+  }
+
+  public void deleteAll(){
+    taskDao.deleteAll();
   }
 
 }
