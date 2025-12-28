@@ -1,5 +1,6 @@
 package com.ainesh.TeamTaskTracker.models;
 
+import java.time.LocalDateTime;
 import com.ainesh.TeamTaskTracker.enums.TaskStatusEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,6 +27,7 @@ public class Task extends Audited {
   private String title;
   private String description;
   private TaskStatusEnum status;
+  private LocalDateTime completedAt;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "project_id", nullable = false)

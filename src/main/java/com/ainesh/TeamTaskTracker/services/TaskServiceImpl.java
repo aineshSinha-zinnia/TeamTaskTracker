@@ -2,9 +2,11 @@ package com.ainesh.TeamTaskTracker.services;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import java.time.LocalDateTime;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.ainesh.TeamTaskTracker.dao.ProjectDao;
 import com.ainesh.TeamTaskTracker.dao.TaskDao;
 import com.ainesh.TeamTaskTracker.dto.TaskCreationRequestDTO;
 import com.ainesh.TeamTaskTracker.dto.TaskResponseDTO;
@@ -15,6 +17,7 @@ import com.ainesh.TeamTaskTracker.dtoMapper.TaskUpdationMapper;
 import com.ainesh.TeamTaskTracker.enums.TaskStatusEnum;
 import com.ainesh.TeamTaskTracker.exceptions.ResourceNotFoundException;
 import com.ainesh.TeamTaskTracker.interfaces.TaskService;
+import com.ainesh.TeamTaskTracker.models.Project;
 import com.ainesh.TeamTaskTracker.models.Task;
 import com.ainesh.TeamTaskTracker.utils.PageableUtil;
 
@@ -23,15 +26,17 @@ public class TaskServiceImpl implements TaskService {
   
   private TaskResponseMapper taskResponseMapper;
   private TaskDao taskDao;
+  private ProjectDao projectDao;
   private TaskCreationMapper taskCreationMapper;
   private TaskUpdationMapper taskUpdationMapper;
 
   @Autowired
-  public TaskServiceImpl(TaskDao taskDao, TaskCreationMapper taskCreationMapper, TaskResponseMapper taskResponseMapper, TaskUpdationMapper taskUpdationMapper){
+  public TaskServiceImpl(TaskDao taskDao, TaskCreationMapper taskCreationMapper, TaskResponseMapper taskResponseMapper, TaskUpdationMapper taskUpdationMapper, ProjectDao projectDao){
     this.taskCreationMapper = taskCreationMapper;
     this.taskDao = taskDao;
     this.taskResponseMapper = taskResponseMapper;
     this.taskUpdationMapper = taskUpdationMapper;
+    this.projectDao = projectDao;
   }
 
   public Page<TaskResponseDTO> getAllTasks(TaskStatusEnum status, Pageable pageable){
@@ -54,7 +59,14 @@ public class TaskServiceImpl implements TaskService {
 
     Task task = taskCreationMapper.apply(taskCreationRequestDTO);
 
+    Project projectOwningTask = projectDao
+                                    .findById(taskCreationRequestDTO.projectId())
+                                    .orElseThrow(
+                                      () -> new ResourceNotFoundException("Invalid project id")
+                                    );
+
     task.setStatus(TaskStatusEnum.OPEN);
+    task.setProject(projectOwningTask);
 
     return taskResponseMapper.apply(taskDao.save(task));
   }
@@ -73,6 +85,10 @@ public class TaskServiceImpl implements TaskService {
                             .orElseThrow(() -> new ResourceNotFoundException("Requested id invalid"));
 
     Task task = taskUpdationMapper.apply(taskUpdationRequestDTO);
+
+    if(taskToBeUpdated.getStatus()!=task.getStatus() && task.getStatus() == TaskStatusEnum.DONE){
+      taskToBeUpdated.setCompletedAt(LocalDateTime.now());
+    }
 
     taskToBeUpdated.setTitle(task.getTitle());
     taskToBeUpdated.setDescription(task.getDescription());
