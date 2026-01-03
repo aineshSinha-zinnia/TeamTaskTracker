@@ -33,6 +33,7 @@ import com.ainesh.TeamTaskTracker.interfaces.ProjectTaskService;
 import com.ainesh.TeamTaskTracker.models.Project;
 import com.ainesh.TeamTaskTracker.models.Task;
 import com.ainesh.TeamTaskTracker.utils.PageableUtil;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ProjectTaskServiceImpl implements ProjectTaskService {
@@ -265,6 +266,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
+  @Transactional
   public void deleteAllTasksInProject(Long projectId) {
     taskDao.deleteByProjectId(projectId);
   }

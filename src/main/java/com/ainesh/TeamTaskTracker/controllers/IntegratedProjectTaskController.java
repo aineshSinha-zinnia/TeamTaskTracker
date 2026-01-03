@@ -62,7 +62,7 @@ public class IntegratedProjectTaskController {
 
   }
 
-  @GetMapping("/project/{projectId}/task/{taskId}")
+  @GetMapping("/projects/{projectId}/task/{taskId}")
   public ResponseEntity<?> seeTaskWithinProject(
     @PathVariable Long projectId,
     @PathVariable Long taskId
@@ -71,7 +71,7 @@ public class IntegratedProjectTaskController {
     return ResponseEntity.ok(taskResponseDTO);
   }
 
-  @PutMapping("/project/{projectId}/task/{taskId}")
+  @PutMapping("/projects/{projectId}/task/{taskId}")
   public ResponseEntity<?> updateTaskWithinProject(
     @PathVariable Long projectId,
     @PathVariable Long taskId,
@@ -82,7 +82,7 @@ public class IntegratedProjectTaskController {
     );
   }
 
-  @DeleteMapping("/project/{projectId}/task/{taskId}")
+  @DeleteMapping("/projects/{projectId}/task/{taskId}")
   public ResponseEntity<?> deleteTaskWithinProject(
     @PathVariable Long projectId,
     @PathVariable Long taskId
@@ -91,10 +91,10 @@ public class IntegratedProjectTaskController {
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
-  @GetMapping("/project/{projectId}/stats/count")
+  @GetMapping("/projects/{projectId}/stats/count")
   public ResponseEntity<?> getTaskCountWithinProject(
     @PathVariable Long projectId,
-    @RequestParam TaskStatusEnum status
+    @RequestParam(required = false) TaskStatusEnum status
   ){
 
     ProjectStatsResponse<StatCountDTO> projectStatsResponse = projectTaskService.taskCountWithinProject(projectId, status);
@@ -103,7 +103,7 @@ public class IntegratedProjectTaskController {
 
   }
 
-  @GetMapping("/project/{projectId}/stats/summary")
+  @GetMapping("/projects/{projectId}/stats/summary")
   public ResponseEntity<?> getTaskSummary(
     @PathVariable Long projectId
   ){
@@ -112,7 +112,7 @@ public class IntegratedProjectTaskController {
     return ResponseEntity.ok(projectStatsResponse);
   }
 
-  @GetMapping("/project/{projectId}/stats/progress")
+  @GetMapping("/projects/{projectId}/stats/progress")
   public ResponseEntity<?> getProjectProgress(
     @PathVariable Long projectId
   ){
@@ -120,7 +120,7 @@ public class IntegratedProjectTaskController {
     return ResponseEntity.ok(projectStatsResponse);
   }
 
-  @GetMapping("/project/{projectId}/stats/activity")
+  @GetMapping("/projects/{projectId}/stats/activity")
   public ResponseEntity<?> getProjectActivity(
     @PathVariable Long projectId,
     @RequestParam int days
@@ -129,7 +129,7 @@ public class IntegratedProjectTaskController {
     return ResponseEntity.ok(projectStatsResponse);
   }
 
-  @GetMapping("/project/{projectId}/stats/stale")
+  @GetMapping("/projects/{projectId}/stats/stale")
   public ResponseEntity<?> staleTasksList(
     @PathVariable Long projectId,
     @RequestParam int limit
@@ -138,7 +138,7 @@ public class IntegratedProjectTaskController {
     return ResponseEntity.ok(projectStatsResponse);
   }
 
-  @DeleteMapping("/project/{projectId}/tasks")
+  @DeleteMapping("/projects/{projectId}/tasks")
   public ResponseEntity<?> deleteAllTasksInProject(
     @PathVariable Long projectId
   ){
@@ -146,7 +146,7 @@ public class IntegratedProjectTaskController {
     return ResponseEntity.noContent().build();
   }
 
-  @PutMapping("/project/{projectId}/tasks")
+  @PutMapping("/projects/{projectId}/tasks")
   public ResponseEntity<?> bulkTaskUpdate(
     @PathVariable Long projectId,
     @RequestParam TaskStatusEnum taskStatusEnum
